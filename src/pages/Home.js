@@ -1,8 +1,8 @@
-import React from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import { useHistory } from "react-router-dom";
 
-import { Button, Checkbox, InputNumber } from "antd";
+import { Button, Checkbox, Input } from "antd";
 
 const Wrapper = styled.section`
   width: 28vw;
@@ -27,7 +27,7 @@ const InputWrapper = styled.div`
   position: relative;
 `;
 
-const StyledInput = styled(InputNumber)`
+const StyledInput = styled(Input)`
   width: 50%;
   display: inline-block;
   border-color: black;
@@ -46,6 +46,17 @@ const StyledButton = styled(Button)`
 
 export const Home = () => {
   const history = useHistory();
+  const [numOfSeats, setNumOfSeats] = useState("");
+  const [nextTo, setNextTo] = useState(false);
+
+  const handlenNumberInputChange = (e) => {
+    const num = e.target.validity.valid ? e.target.value : numOfSeats;
+    setNumOfSeats(num);
+  };
+
+  const handleCheckboxChange = () => {
+    setNextTo((prevState) => !prevState);
+  };
 
   const handleSubmit = () => {
     history.push("/reservation");
@@ -57,14 +68,17 @@ export const Home = () => {
         <label htmlFor="seats">Liczba miejsc:</label>
         <StyledInput
           id="seats"
-          min={1}
-          max={40}
-          //   defaultValue={}
-          onChange={() => alert("You must add a handler ;D")}
+          pattern="[0-9]*"
+          onChange={handlenNumberInputChange}
+          value={numOfSeats}
         />
       </InputWrapper>
       <InputWrapper>
-        <Checkbox id="nextTo" />
+        <Checkbox
+          id="nextTo"
+          checked={nextTo}
+          onChange={handleCheckboxChange}
+        />
         <Label htmlFor="nextTo">Czy miejsca mają być obook siebie?</Label>
       </InputWrapper>
       <StyledButton onClick={handleSubmit}>Wybierz miejsca</StyledButton>
